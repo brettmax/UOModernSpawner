@@ -30,7 +30,9 @@ dotnet test Projects/ModernSpawner.Tests   # 427 tests; the lifecycle collection
 dotnet build -c Analyze                    # analyzers + Rules.ruleset
 ```
 
-`Directory.Build.props` here applies only to `Projects/**`; the submodule keeps its own.
+`Directory.Build.props` here applies only to `Projects/**`; the submodule keeps its own. A server package set
+that consumes this repo as a submodule points `ModernUORoot` at its own ModernUO checkout with a
+`ModernSpawner.Host.props` placed anywhere above this repo; standalone builds never see one.
 `TreatWarningsAsErrors` is on. The ModernUO serialization generator is referenced directly by
 `ModernSpawner.csproj` (it is a private asset in ModernUO and does not flow through project references).
 World-backed tests (`Projects/ModernSpawner.Tests/Core/ModernSpawnerLifecycleTests.cs`) share a

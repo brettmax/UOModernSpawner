@@ -4,7 +4,15 @@
       Applies to Projects/** in this repository only. MSBuild imports the nearest
       Directory.Build.props walking up from each project, so the ModernUO submodule
       keeps its own build settings.
+
+      When ModernSpawner is consumed as a submodule of a server package set, the host
+      places a ModernSpawner.Host.props anywhere above this repository to point
+      ModernUORoot at its own ModernUO checkout, so the server is built once.
     -->
+    <PropertyGroup>
+        <ModernSpawnerHostProps>$([MSBuild]::GetPathOfFileAbove('ModernSpawner.Host.props', $([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..'))))</ModernSpawnerHostProps>
+    </PropertyGroup>
+    <Import Project="$(ModernSpawnerHostProps)" Condition="'$(ModernSpawnerHostProps)' != ''" />
     <PropertyGroup>
         <Authors>Kamron Batman</Authors>
         <Company>ModernUO</Company>
@@ -18,7 +26,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DefineConstants>MUO</DefineConstants>
         <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
-        <ModernUORoot>$(MSBuildThisFileDirectory)ModernUO/</ModernUORoot>
+        <ModernUORoot Condition="'$(ModernUORoot)' == ''">$(MSBuildThisFileDirectory)ModernUO/</ModernUORoot>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
